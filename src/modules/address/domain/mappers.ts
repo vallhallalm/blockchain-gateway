@@ -6,4 +6,29 @@ const mapPostedAddress = (addressData: {
     return { address: addressData.address };
 };
 
-export default { mapPostedAddress };
+const mapAddressBalance = (addressData: { address: string; balance: string }, token: string) => {
+    return {
+        address: addressData.address,
+        token,
+        balance: addressData.balance,
+    };
+};
+
+const mapAddressNftBalance = (addressData: {
+    balances: Record<number, number>;
+    tokenMetadata: Record<string, any>;
+    contractAddress: string;
+}) => {
+    return Object.entries(addressData.balances).map(([tokenId, balance]) => ({
+        tokenId: Number(tokenId),
+        balance,
+        contractAddress: addressData.contractAddress,
+        metadata: addressData.tokenMetadata[tokenId] || {},
+    }));
+};
+
+const mapAddressNftValidity = (balance: bigint) => {
+    return { isValid: balance > 0 };
+};
+
+export default { mapPostedAddress, mapAddressBalance, mapAddressNftBalance, mapAddressNftValidity };

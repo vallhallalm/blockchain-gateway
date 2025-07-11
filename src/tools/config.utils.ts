@@ -1,9 +1,11 @@
 import fs from "fs/promises";
-import path from "path";
 
 export class Config<T = any> {
     private static _instance: Config;
-    static values: any;
+    static values: {
+        rpcUrl: string;
+        port: number;
+    };
 
     private constructor() {
         // constructeur privé pour éviter les new externes

@@ -1,3 +1,3 @@
-import { addressRouter } from "./infrastructure/router";
+import { addressRouter } from "./infrastructure/router.js";
 
 export default addressRouter;
