@@ -31,4 +31,17 @@ const mapAddressNftValidity = (balance: bigint) => {
     return { isValid: balance > 0 };
 };
 
-export default { mapPostedAddress, mapAddressBalance, mapAddressNftBalance, mapAddressNftValidity };
+const mapContractIssuedNfts = (tokenMetadata: Record<string, any> = {}) => {
+    return Object.entries(tokenMetadata).map(([id, metadata]) => ({
+        tokenId: id,
+        metadata,
+    }));
+};
+
+export default {
+    mapPostedAddress,
+    mapAddressBalance,
+    mapAddressNftBalance,
+    mapAddressNftValidity,
+    mapContractIssuedNfts,
+};

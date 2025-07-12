@@ -6,6 +6,7 @@ import { AbiCache } from "./tools/abi.utils.js";
 import { KeyCache } from "./tools/keyCache.js";
 import transferRouter from "./modules/transfer/index.js";
 import matchRouter from "./modules/match/index.js";
+import drawRouter from "./modules/draw/index.js";
 
 const DEFAULT_PORT_TO_LISTEN = 8080;
 
@@ -22,7 +23,8 @@ async function main() {
     v1Router
         .use(Route.ADDRESS, addressRouter)
         .use(Route.TRANSFER, transferRouter)
-        .use(Route.MATCH, matchRouter);
+        .use(Route.MATCH, matchRouter)
+        .use(Route.DRAW, drawRouter);
     app.use("/v1", v1Router);
 
     app.listen(Config.values.port || DEFAULT_PORT_TO_LISTEN);

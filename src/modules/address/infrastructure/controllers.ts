@@ -4,7 +4,7 @@ import AddressService from "../domain/services.js";
 
 const postAddress = controllerFactory(
     {
-        body: zod.object({ userId: zod.number() }),
+        body: zod.object({ userId: zod.string() }),
     },
     ({ body: { userId } }) => AddressService.postAddress(userId)
 );
@@ -42,10 +42,18 @@ const checkTokenValidity = controllerFactory(
         AddressService.checkTokenValidity(addressId, token, tokenId)
 );
 
+const getMintedTokens = controllerFactory(
+    {
+        params: zod.object({ addressId: zod.string() }),
+    },
+    ({ params: { addressId } }) => AddressService.getMintedTokens(addressId)
+);
+
 export default {
     postAddress,
     getAddressBalance,
     getAddressTokenBalance,
     getAddressNftBalance,
     checkTokenValidity,
+    getMintedTokens,
 };

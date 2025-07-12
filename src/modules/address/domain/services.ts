@@ -5,7 +5,7 @@ import AddressMappers from "./mappers.js";
 import { Config } from "../../../tools/config.utils.js";
 import { AbiCache } from "../../../tools/abi.utils.js";
 
-const postAddress = async (userId: number) => {
+const postAddress = async (userId: string) => {
     const createdAddress = Wallet.createRandom();
 
     const folderPath = path.join("./addresses");
@@ -94,7 +94,11 @@ const getAddressNftBalance = async (address: string) => {
             })
         );
     }
-    return holdedNfts;
+    return {
+        nftCollections: holdedNfts.map((nft) => ({
+            nfts: nft,
+        })),
+    };
 };
 
 const checkTokenValidity = async (address: string, token: string, tokenId: string) => {
@@ -105,10 +109,37 @@ const checkTokenValidity = async (address: string, token: string, tokenId: strin
     return AddressMappers.mapAddressNftValidity(balance);
 };
 
+const getMintedTokens = async (addressId: string) => {
+    const provider = new ethers.JsonRpcProvider(Config.values.rpcUrl);
+    const contract = new ethers.Contract(addressId, AbiCache.values.erc1155, provider);
+
+    const filter = contract.filters.TransferSingle(null, ethers.ZeroAddress);
+
+    const logs = await contract.queryFilter(filter, 0, "latest");
+
+    const tokenIds = new Set<string>();
+
+    for (const log of logs) {
+        const tokenId = (log as unknown as { args: { id: string } }).args.id.toString();
+        tokenIds.add(tokenId);
+    }
+
+    let tokenMetadata: Record<string, any> = {};
+    for (const id of tokenIds) {
+        const tokenUri = await contract.uri(id);
+        const metadata = await fetch(tokenUri.replace("ipfs://", "https://ipfs.io/ipfs/")).then(
+            (res) => res.json()
+        );
+        tokenMetadata[id] = metadata;
+    }
+    return AddressMappers.mapContractIssuedNfts(tokenMetadata);
+};
+
 export default {
     postAddress,
     getAddress,
     getAddressTokenBalance,
     getAddressNftBalance,
     checkTokenValidity,
+    getMintedTokens,
 };

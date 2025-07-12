@@ -1,0 +1,179 @@
+[
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "drawBlockNumber",
+                "type": "uint256"
+            }
+        ],
+        "name": "DrawCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "seed",
+                "type": "bytes32"
+            }
+        ],
+        "name": "SeedGenerated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint256",
+                "name": "drawBlockNumber",
+                "type": "uint256"
+            }
+        ],
+        "name": "createDraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "draws",
+        "outputs": [
+            {
+                "internalType": "bytes32",
+                "name": "merkleRoot",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint256",
+                "name": "drawBlockNumber",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "seed",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bool",
+                "name": "seedGenerated",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            }
+        ],
+        "name": "generateSeed",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "totalParticipants",
+                "type": "uint256"
+            }
+        ],
+        "name": "getWinnerIndex",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "drawId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "totalParticipants",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "leafIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes32[]",
+                "name": "proof",
+                "type": "bytes32[]"
+            }
+        ],
+        "name": "verifyWinner",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

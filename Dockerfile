@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=builder /app/dist .
-COPY --from=builder abi ./abi
+COPY --from=builder /app/abi ./abi
 
 EXPOSE 8080
 

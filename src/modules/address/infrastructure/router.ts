@@ -12,6 +12,7 @@ export const addressRouter = routerFactory([
         path: "/:addressId/balance",
         controller: controllers.getAddressBalance,
     },
+    { method: "get", path: "/:addressId/mintedToken", controller: controllers.getMintedTokens },
     {
         method: "get",
         path: "/:addressId/balance/nft",

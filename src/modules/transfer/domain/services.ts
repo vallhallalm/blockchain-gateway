@@ -11,7 +11,7 @@ const transferErc20 = async (from: string, to: string, amount: number, token: st
     }
     const wallet = new ethers.Wallet(fromPrivateKey, provider);
     const contract = new ethers.Contract(token, AbiCache.values.erc20, wallet);
-    const weiAmount = ethers.parseUnits(String(amount), 18);
+    const weiAmount = amount;
     const tx = await contract.transfer(to, weiAmount);
 
     console.debug("Waiting for tx confirmation...");
