@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-type abiContractName = "erc20" | "erc1155" | string;
+type abiContractName = "erc20" | "erc1155" | "matchSummary" | string;
 
 export class AbiCache {
     private static _instance: AbiCache;

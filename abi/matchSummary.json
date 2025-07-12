@@ -1,0 +1,50 @@
+[
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "date",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "location",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "summaryJson",
+                "type": "string"
+            }
+        ],
+        "name": "MatchCommitted",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "date",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "location",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "summaryJson",
+                "type": "string"
+            }
+        ],
+        "name": "commitSummary",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

@@ -5,6 +5,7 @@ import express, { Router } from "express";
 import { AbiCache } from "./tools/abi.utils.js";
 import { KeyCache } from "./tools/keyCache.js";
 import transferRouter from "./modules/transfer/index.js";
+import matchRouter from "./modules/match/index.js";
 
 const DEFAULT_PORT_TO_LISTEN = 8080;
 
@@ -18,7 +19,10 @@ async function main() {
     app.use(express.json());
 
     const v1Router = Router();
-    v1Router.use(Route.ADDRESS, addressRouter).use(Route.TRANSFER, transferRouter);
+    v1Router
+        .use(Route.ADDRESS, addressRouter)
+        .use(Route.TRANSFER, transferRouter)
+        .use(Route.MATCH, matchRouter);
     app.use("/v1", v1Router);
 
     app.listen(Config.values.port || DEFAULT_PORT_TO_LISTEN);
