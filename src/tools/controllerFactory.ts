@@ -1,5 +1,5 @@
-import { Request, RequestHandler } from "express";
-import { z, ZodTypeAny, ZodObject } from "zod";
+import { RequestHandler, Request } from "express";
+import { z, ZodTypeAny, ZodObject, ZodError } from "zod";
 
 type ControllerInput = {
     body?: ZodTypeAny;
@@ -13,37 +13,43 @@ type InferValidated<T extends ControllerInput> = {
     params: T["params"] extends ZodTypeAny ? z.infer<T["params"]> : undefined;
 };
 
-function validateSchema<T extends ControllerInput>(schemas: T, req: Request) {
+class ValidationError extends Error {
+    statusCode: number;
+    details?: any;
+
+    constructor(message: string, statusCode = 400, details?: any) {
+        super(message);
+        this.name = "ValidationError";
+        this.statusCode = statusCode;
+        this.details = details;
+    }
+}
+
+export function validateSchema<T extends ControllerInput>(schemas: T, req: Request) {
     const validated: any = {};
 
     // Check for unexpected input
     if (!schemas.body && req.body && Object.keys(req.body).length > 0) {
-        throw new Error("Unexpected body input");
+        throw new ValidationError("Unexpected body input", 400);
     }
     if (!schemas.query && req.query && Object.keys(req.query).length > 0) {
-        throw new Error("Unexpected query input");
+        throw new ValidationError("Unexpected query input", 400);
     }
     if (!schemas.params && req.params && Object.keys(req.params).length > 0) {
-        throw new Error("Unexpected route params input");
+        throw new ValidationError("Unexpected route params input", 400);
     }
 
-    if (schemas.body) {
-        validated.body = schemas.body.parse(req.body);
-    } else {
-        validated.body = undefined;
+    try {
+        validated.body = schemas.body ? schemas.body.parse(req.body) : undefined;
+        validated.query = schemas.query ? schemas.query.parse(req.query) : undefined;
+        validated.params = schemas.params ? schemas.params.parse(req.params) : undefined;
+    } catch (err) {
+        if (err instanceof ZodError) {
+            throw new ValidationError("Invalid request schema", 400, err.flatten());
+        }
+        throw err;
     }
 
-    if (schemas.query) {
-        validated.query = schemas.query.parse(req.query);
-    } else {
-        validated.query = undefined;
-    }
-
-    if (schemas.params) {
-        validated.params = schemas.params.parse(req.params);
-    } else {
-        validated.params = undefined;
-    }
     return validated;
 }
 
@@ -56,8 +62,29 @@ export function controllerFactory<T extends ControllerInput>(
             const validated = validateSchema(schemas, req);
             const result = await controller(validated);
             res.json(result);
-        } catch (err) {
-            next(err);
+        } catch (err: any) {
+            console.log(err);
+            if (err.name === "ValidationError" && err.statusCode) {
+                res.status(err.statusCode).json({
+                    message: err.message,
+                    errors: err.details,
+                });
+                next();
+            } else if (err.statusCode && err.statusCode >= 400 && err.statusCode < 500) {
+                res.status(err.statusCode).json({
+                    message: err.message,
+                    errors: err.details,
+                });
+                next();
+            } else {
+                res.status(500).json({
+                    message: "Internal server error",
+                    errors: "An unexpected error occurred, if this continues, please contact support.",
+                });
+                next();
+            }
+
+            next(err); // Unhandled error: pass to generic error middleware
         }
     };
 }

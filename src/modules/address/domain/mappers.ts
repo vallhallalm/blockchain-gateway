@@ -19,12 +19,14 @@ const mapAddressNftBalance = (addressData: {
     tokenMetadata: Record<string, any>;
     contractAddress: string;
 }) => {
-    return Object.entries(addressData.balances).map(([tokenId, balance]) => ({
-        tokenId: Number(tokenId),
-        balance,
-        contractAddress: addressData.contractAddress,
-        metadata: addressData.tokenMetadata[tokenId] || {},
-    }));
+    return Object.entries(addressData.balances)
+        .map(([tokenId, balance]) => ({
+            tokenId: Number(tokenId),
+            balance,
+            contractAddress: addressData.contractAddress,
+            metadata: addressData.tokenMetadata[tokenId] || {},
+        }))
+        .filter((nft) => nft.balance > 0);
 };
 
 const mapAddressNftValidity = (balance: bigint) => {
@@ -32,10 +34,12 @@ const mapAddressNftValidity = (balance: bigint) => {
 };
 
 const mapContractIssuedNfts = (tokenMetadata: Record<string, any> = {}) => {
-    return Object.entries(tokenMetadata).map(([id, metadata]) => ({
-        tokenId: id,
-        metadata,
-    }));
+    return {
+        mintedNfts: Object.entries(tokenMetadata).map(([id, metadata]) => ({
+            tokenId: id,
+            metadata,
+        })),
+    };
 };
 
 export default {

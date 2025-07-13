@@ -1,7 +1,7 @@
 import addressRouter from "./modules/address/index.js";
 import { Route } from "./route.js";
 import { Config } from "./tools/config.utils.js";
-import express, { Router } from "express";
+import express, { Router, Request, Response, NextFunction } from "express";
 import { AbiCache } from "./tools/abi.utils.js";
 import { KeyCache } from "./tools/keyCache.js";
 import transferRouter from "./modules/transfer/index.js";
@@ -18,7 +18,18 @@ async function main() {
     const app = express();
 
     app.use(express.json());
+    app.use((req: Request, res: Response, next: NextFunction): void => {
+        res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
+        res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"); // Allow these methods
+        res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
+        // Handle preflight requests
+        if (req.method === "OPTIONS") {
+            res.sendStatus(204);
+        }
+
+        next();
+    });
     const v1Router = Router();
     v1Router
         .use(Route.ADDRESS, addressRouter)
